@@ -1,0 +1,1 @@
+%include "../kernel/main.asm"
