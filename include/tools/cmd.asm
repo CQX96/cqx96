@@ -16,6 +16,68 @@ cmd_device:
 	popa
 	jmp commandline
 	
+cmd_mv:
+	pusha
+	cmp bx, 0
+	je .error
+	cmp cx, 0
+	je .error
+	push cx
+	mov ax, bx
+	push ax
+	mov bx, 0
+	mov cx, 40960
+	call os_load_file
+	jc fail
+	pop ax
+	call os_remove_file
+	pop cx
+	mov ax, cx
+	mov cx, bx
+	mov bx, 40960
+	call os_write_file
+	popa
+	jmp commandline
+.error:
+	mov si, no_ext
+	call newline
+	call printstring
+	jmp commandline
+	
+cmd_devmove:
+	pusha
+	cmp bx, 0
+	je .error
+	cmp cx, 0
+	je .error
+	mov si, [bootdev]
+	mov [bootbackup], si
+	mov ax, bx
+	mov [bootdev], ax
+	push cx
+	mov ax, cx
+	push ax
+	mov bx, 0
+	mov cx, 40960
+	call os_load_file
+	jc fail
+	pop ax
+	call os_remove_file
+	pop cx
+	mov ax, [bootbackup]
+	mov [bootdev], ax
+	mov ax, cx
+	mov cx, bx
+	mov bx, 40960
+	call os_write_file
+	popa
+	jmp commandline
+.error:
+	mov si, no_ext
+	call newline
+	call printstring
+	jmp commandline
+	
 cmd_printdevice:
 	pusha
 	call newline
@@ -219,11 +281,13 @@ rem_cmd db "rem", 0
 ver_cmd db "ver", 0
 device_cmd db "cd", 0
 printdevice_cmd db "pcd", 0
+devmove_cmd db "devcpy", 0
+mv_cmd db "mv", 0
 quit_cmd db "quit", 0
 adduser_cmd db "adduser", 0
 dirlist	times 1024 db 0
 userfile times 32 db 0
-no_ext db "No filename specified.", 0
+no_ext db "No filename(s) specified.", 0
 removed db "Removed!", 0
 critical db "Critical error.", 0
 newusername db "New username: ", 0
@@ -240,3 +304,4 @@ created db "Created!", 0
 usrfile times 13 db 0
 usrext db ".USR", 0
 input times 64 db 0
+bootbackup db 0
