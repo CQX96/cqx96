@@ -26,5 +26,5 @@ NOTE 2
 
 This is my second operating system (My first one was very bad).
 
-Technically it is not my second operating system, but others where for learning, so...
+Technically it is not my second operating system, but others were for learning, so...
 
