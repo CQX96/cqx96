@@ -21,7 +21,7 @@ cmd_printdevice:
 	mov ax, [bootdev]
 	call os_int_to_string
 	mov si, ax
-	call os_print_string
+	call printstring
 	popa
 	jmp commandline
 
