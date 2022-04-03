@@ -15,6 +15,15 @@ cmd_device:
 	call change_device
 	popa
 	jmp commandline
+	
+cmd_printdevice:
+	pusha
+	mov ax, [bootdev]
+	call os_int_to_string
+	mov si, ax
+	call os_print_string
+	popa
+	jmp commandline
 
 cmd_rem:
 	pusha
@@ -208,6 +217,7 @@ dir_cmd db "dir", 0
 rem_cmd db "rem", 0
 ver_cmd db "ver", 0
 device_cmd db "cd", 0
+printdevice_cmd db "pcd", 0
 quit_cmd db "quit", 0
 adduser_cmd db "adduser", 0
 dirlist	times 1024 db 0
