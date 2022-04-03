@@ -22,7 +22,7 @@ NOTE 1
 This project uses some code from different authors. (people from Stack Overflow and MikeOS)
 
 
-The snippets from MikeOS are in the include\mike directory.
+The snippets from MikeOS are in the include\mike directory (note that we did change some stuff).
 
 NOTE 2
 ======
