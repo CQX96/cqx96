@@ -1285,7 +1285,12 @@ disk_reset_floppy:
 	ret
 
 
-
+change_device:		; note: AX = New device ID
+	mov si, ax
+	call os_string_to_int
+	mov [bootdev], ax
+	ret
+	
 
 
 
