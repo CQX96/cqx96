@@ -13,10 +13,18 @@ All contributions are welcome.
 
 Currently, CQX96 supports the FAT file system.
 
-NOTE!!
+NOTE 1
 ======
 
 This project uses some code from different authors. (people from Stack Overflow and MikeOS)
 
 
 The snippets from MikeOS are in the include\mike directory.
+
+NOTE 2
+======
+
+This is my second operating system (My first one was very bad).
+
+Technically it is not my second operating system, but others where for learning, so...
+
