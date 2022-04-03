@@ -31,7 +31,7 @@ init:
 		mov sp,0x8000
 		mov byte [0xffff], dl
 get_disk:
-		mov al, "#"
+		mov al, "?"
 		call input_line
 		call xdigit             ; Get a hexadecimal digit
 		mov cl,4
@@ -51,7 +51,6 @@ copy:		push cs
 		pusha
 		int 0x13
 		popa
-		jc exit
 		pop dx
 		push dx
 		mov ah, 0x43
@@ -59,7 +58,6 @@ copy:		push cs
 		pusha
 		int 0x13
 		popa
-		jc exit
 		add word [dap.lba_lower], 2
 		cmp word [dap.lba_lower], 0xffff
 		jne copy
