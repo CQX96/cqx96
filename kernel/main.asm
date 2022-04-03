@@ -175,6 +175,10 @@ commandline:
 	mov di, device_cmd
 	call stringcompare
 	jc cmd_device
+	
+	mov di, printdevice_cmd
+	call stringcompare
+	jc cmd_printdevice
 
 	mov di, make_cmd
 	call stringcompare
