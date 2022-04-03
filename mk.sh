@@ -2,7 +2,7 @@ echo "MAKE for CQX96"
 
 echo "Assembling..."
 nasm -O0 -f bin -o boot.bin main.asm
-nasm -O0 -f bin -o build/Setup.usb boot/setup.asm
+nasm -O0 -f bin -o build/Setup.img boot/setup.asm
 cd main
 nasm -O0 -f bin -o ../kernel/cqx96.sys main.asm
 cd ../programs
@@ -26,6 +26,7 @@ sleep 0.2
 echo "Unmounting disk image..."
 umount tmp-loop || exit
 rm -rf tmp-loop
-cat CQX96.img >> Setup.usb
+cat CQX96.img >> Setup.img
+truncate -s -512 Setup.img
 cd ..
 echo Done!
