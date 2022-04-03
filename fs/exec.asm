@@ -1,7 +1,7 @@
 ; EXEC.ASM
 ; For the CQX96 Kernel
 
-
+; This file is for me, to remember function names without me having to look through lots of lines.
 
 
 
