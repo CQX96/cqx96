@@ -11,5 +11,4 @@ All contributions are welcome.
 
 
 
-CQX96 supports the FAT file system.
-(When the ability to read from other devices comes, it will support more FileSystems)
+Currently, CQX96 supports the FAT file system.
