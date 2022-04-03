@@ -337,7 +337,7 @@ openbracket   db "[",0
 closebracket  db "]",0
 rngo          db 0
 noting        db 0
-ver           equ "0.03"
+ver           equ "0.04"
 %include "../include/tools/cmd.asm"
 %include "../fs/handler/urand.asm"
 %include "../fs/handler/null.asm"
