@@ -13,6 +13,9 @@ All contributions are welcome.
 
 Currently, CQX96 supports the FAT file system.
 
+This operating system has been tested and worked on these computers:
+  1. Acer Aspire 3690
+
 NOTE 1
 ======
 
