@@ -18,6 +18,7 @@ cmd_device:
 	
 cmd_printdevice:
 	pusha
+	call newline
 	mov ax, [bootdev]
 	call os_int_to_string
 	mov si, ax
@@ -233,7 +234,7 @@ null_cmd db "./null", 0
 null1_cmd db "./null.1", 0
 sbeep_cmd db "./sbeep", 0
 sbeep1_cmd db "./sbeep.1", 0
-version db "0.03", 0
+version db "0.04", 0
 nonewslash db "You cannot create another SLASH user.", 0
 created db "Created!", 0
 usrfile times 13 db 0
