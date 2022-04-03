@@ -192,6 +192,14 @@ commandline:
 	call stringcompare
 	jc cmd_rem
 	
+	mov di, devmove_cmd
+	call stringcompare
+	jc cmd_devmove
+	
+	mov di, mv_cmd
+	call stringcompare
+	jc cmd_mv
+	
 	mov di, ver_cmd
 	call stringcompare
 	jc cmd_ver
