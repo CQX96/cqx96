@@ -29,4 +29,3 @@ rm -rf tmp-loop
 cat CQX96.img >> Setup.usb
 cd ..
 echo Done!
-
