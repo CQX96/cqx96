@@ -18,6 +18,14 @@ jmp os_load_file          ;0018h
 jmp os_string_chomp       ;001Bh
 jmp os_int_to_string      ;001Eh
 jmp os_load_file          ;0021h
+jmp os_string_copy        ;0024h
+jmp os_string_tokenize    ;0027h
+jmp os_string_length      ;002Ah
+jmp os_print_2hex         ;002Dh
+jmp os_print_4hex         ;0030h
+jmp os_string_compare     ;0033h
+jmp os_string_to_int      ;0036h
+jmp os_get_file_size      ;0039h
 disk_buff	equ	24576
 cqx:
 	cli
@@ -312,6 +320,62 @@ newline:
 	int 10h
 	popa
 	ret
+
+; =============MikeOS=============
+
+os_print_1hex:
+	pusha
+
+	and ax, 0Fh
+	call os_print_digit
+
+	popa
+	ret
+
+os_print_2hex:
+	pusha
+
+	push ax
+	shr ax, 4
+	call os_print_1hex
+
+	pop ax
+	call os_print_1hex
+
+	popa
+	ret
+
+os_print_4hex:
+	pusha
+
+	push ax
+	mov al, ah
+	call os_print_2hex
+
+	pop ax	
+	call os_print_2hex
+
+	popa
+	ret
+
+os_print_digit:
+	pusha
+
+	cmp ax, 9
+	jle .digit_format
+
+	add ax, 'A'-'9'-1
+
+.digit_format:
+	add ax, '0'
+
+	mov ah, 0Eh
+	int 10h
+
+	popa
+	ret
+; ================================
+
 reachedlogin  db "[SUCCESS!] Reached target: Login", 0
 sysload_dmn   db "Starting system daemon",0
 filesys_dmn   db "Starting filesystem daemon",0
