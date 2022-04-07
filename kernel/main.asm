@@ -3,9 +3,6 @@
 
 ; It is the kernel.
 
-
-
-
 jmp cqx                   ;0000h   [bootloader]
 jmp printstring           ;0003h
 jmp commandline           ;0006h
@@ -26,6 +23,8 @@ jmp os_print_4hex         ;0030h
 jmp os_string_compare     ;0033h
 jmp os_string_to_int      ;0036h
 jmp os_get_file_size      ;0039h
+jmp program_file 		  ;003Ch
+jmp login		 		  ;003Fh [for logout command(?)]
 disk_buff	equ	24576
 cqx:
 	cli
@@ -57,8 +56,6 @@ cqx:
 	
 no_change:
 	mov ax, sysload_dmn
-	call load_daemon
-	mov ax, fshandler_dmn
 	call load_daemon
 	mov ax, filesys_dmn
 	call load_daemon
@@ -143,77 +140,20 @@ slashuser:
 	jmp commandline
 	
 commandline:	
-	call newline
-	mov si, openbracket
-	call printstring
-	mov ax, loggedinuser
-	call os_string_uppercase
-	mov si, ax
-	call printstring
-	mov si, closebracket
-	call printstring
-	mov si, delim
-	call printstring
-	mov ax, input
-	mov bx, 64
-	call getinput
-	mov ax, input
-	call os_string_chomp
-	mov si, ax
-	call split
-	mov si, ax
-	
-	cmp byte [isslash], 1
-	je slasher
-	
-	cmp si, 0
-	je commandline
-	
-	cmp byte [isslash], 1
-	je slasher
-	
-	mov di, display_cmd
-	call stringcompare
-	jc cmd_display
-	
-	mov di, quit_cmd
-	call stringcompare
-	jc cmd_quit
-	
-	mov di, device_cmd
-	call stringcompare
-	jc cmd_device
-	
-	mov di, printdevice_cmd
-	call stringcompare
-	jc cmd_printdevice
+	mov ax, shellname
+	mov bx, 0
+	mov cx, 28200
+	call os_load_file
+	jc fail
 
-	mov di, make_cmd
-	call stringcompare
-	jc cmd_make
-	
-	mov di, dir_cmd
-	call stringcompare
-	jc cmd_dir
-	
-	mov di, rem_cmd
-	call stringcompare
-	jc cmd_rem
-	
-	mov di, devmove_cmd
-	call stringcompare
-	jc cmd_devmove
-	
-	mov di, mv_cmd
-	call stringcompare
-	jc cmd_mv
-	
-	mov di, ver_cmd
-	call stringcompare
-	jc cmd_ver
-	
-	mov si, input
-	jmp program_file
+	mov ax, 0
+	mov bx, 0
+	mov cx, 0
+	mov dx, 0
+	mov si, 0
+	mov di, 0
+
+	jmp 28200
 	
 slasher:
 	mov di, adduser_cmd
@@ -247,7 +187,10 @@ load_daemon:     ; in=ax=daemon name, out=ax=success(0)||fail(1)
 	mov ax, 0
 	
 	ret
-	
+
+shellfail:
+	mov si, noshellfound
+	jmp panic
 	
 fail:
 	mov ax, input
@@ -379,7 +322,6 @@ os_print_digit:
 reachedlogin  db "[SUCCESS!] Reached target: Login", 0
 sysload_dmn   db "Starting system daemon",0
 filesys_dmn   db "Starting filesystem daemon",0
-fshandler_dmn db "Starting dir-command daemon",0
 login_dmn     db "Starting login-data daemon",0
 %include "../include/tools/input.asm"
 fn            db '            ',0
@@ -410,8 +352,10 @@ closebracket  db "]",0
 rngo          db 0
 noting        db 0
 ver           equ "0.04"
-%include "../include/tools/cmd.asm"
+shellname     db "MAIN.SHL", 0
+;%include "../include/tools/cmd.asm"
 %include "../fs/handler/urand.asm"
 %include "../fs/handler/null.asm"
 %include "../fs/handler/sbeep.asm"
+%include "../kernel/panic.asm"
 %include "../kernel/includes/ini.asm"
