@@ -144,7 +144,7 @@ slashuser:
 commandline:	
 	mov ax, shellname
 	mov bx, 0
-	mov cx, 28200
+	mov cx, 32768
 	call os_load_file
 	jc shellfail
 
@@ -155,7 +155,7 @@ commandline:
 	mov si, 0
 	mov di, 0
 
-	jmp 28200
+	jmp 32768
 
 get_username:
 	mov si, loggedinuser
