@@ -137,7 +137,7 @@ login:
 	
 slashuser:
 	mov byte [isslash], 1
-	jmp commandline
+	jmp slasher
 	
 commandline:	
 	mov ax, shellname
@@ -156,6 +156,8 @@ commandline:
 	jmp 28200
 	
 slasher:
+	cmp byte [isslash], 0
+	je commandline
 	call newline
 	mov si, openbracket
 	call printstring
@@ -227,7 +229,7 @@ cmd_adduser:
 	mov bx, dx
 	mov word cx, 32
 	call os_write_file
-	jmp commandline
+	jmp slasher
 .actual_fail:
 	call newline
 	mov si, critical
