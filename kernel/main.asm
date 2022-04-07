@@ -26,6 +26,7 @@ jmp os_get_file_size      ;0039h
 jmp program_file          ;003Ch
 jmp login		  ;003Fh [for logout command(?)]
 jmp get_username	  ;0042h
+jmp os_string_uppercase   ;0045h
 disk_buff	equ	24576
 cqx:
 	cli
