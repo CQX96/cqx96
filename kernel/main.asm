@@ -88,7 +88,7 @@ no_change:
 	call newline
 	mov si, welcome
 	call printstring
-.login:	
+login:	
 	call newline
 	mov si, loginprompt
 	call printstring
@@ -127,13 +127,13 @@ no_change:
 	call newline
 	mov si, incorrectpass
 	call printstring
-	jmp .login
+	jmp login
 	
 .nosuchuser:
 	call newline
 	mov si, nosuchuser
 	call printstring
-	jmp .login
+	jmp login
 	
 slashuser:
 	mov byte [isslash], 1
@@ -164,6 +164,61 @@ slasher:
 	mov si, slasherror
 	call printstring
 	
+	jmp commandline
+
+adduser_cmd db "adduser", 0
+newusername db "New username: ", 0
+newpassword db "New password: ", 0
+nonewslash  db "You cannot create another SLASH user.", 0
+critical db "Critical error.", 0
+
+cmd_adduser:
+	call newline
+	mov si, newusername
+	call printstring
+	
+	mov ax, input
+	mov bx, 64
+	call getinput
+	
+	mov ax, input
+	
+	cmp ax, slash
+	je .error
+
+	mov ax, input
+	mov bx, usrext
+	mov cx, usrfile
+	call os_string_join
+	
+	call newline
+	mov si, newpassword
+	call printstring
+	
+	mov ax, input
+	mov bx, 64
+	call getinput
+	
+	mov ax, input
+	call os_string_length
+	push ax
+	mov dx, input
+	
+	mov ax, usrfile
+	mov bx, dx
+	mov word cx, 32
+	call os_write_file
+	jmp commandline
+.actual_fail:
+	call newline
+	mov si, critical
+	call printstring
+	jmp commandline
+	
+.error:
+	call newline
+	mov si, nonewslash
+	call printstring
 	jmp commandline
 
 load_daemon:     ; in=ax=daemon name, out=ax=success(0)||fail(1)
@@ -340,6 +395,7 @@ badcmd        db 'Unknown command or filename.', 0
 delim         db ':', 0
 prg_extension db '.PRG', 0
 incorrectpass db 'Incorrect password,',0
+noshellfound  db 'No shell found!',0
 nosuchuser    db 'That is not a user on this system!',0
 space         db ' ', 0
 loginprompt   db 'CQX96 username (Log in as / if you are a new user): ',13,10,0
@@ -353,7 +409,9 @@ rngo          db 0
 noting        db 0
 ver           equ "0.04"
 shellname     db "MAIN.SHL", 0
-;%include "../include/tools/cmd.asm"
+input 		  times 64 db 0
+usrfile 	  times 13 db 0
+usrext		  db ".USR", 0
 %include "../fs/handler/urand.asm"
 %include "../fs/handler/null.asm"
 %include "../fs/handler/sbeep.asm"
