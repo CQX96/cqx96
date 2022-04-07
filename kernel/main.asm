@@ -23,9 +23,9 @@ jmp os_print_4hex         ;0030h
 jmp os_string_compare     ;0033h
 jmp os_string_to_int      ;0036h
 jmp os_get_file_size      ;0039h
-jmp program_file 		  ;003Ch
-jmp login		 		  ;003Fh [for logout command(?)]
-jmp get_username		  ;0042h
+jmp program_file          ;003Ch
+jmp login		  ;003Fh [for logout command(?)]
+jmp get_username	  ;0042h
 disk_buff	equ	24576
 cqx:
 	cli
