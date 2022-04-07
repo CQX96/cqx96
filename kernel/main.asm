@@ -144,7 +144,7 @@ commandline:
 	mov bx, 0
 	mov cx, 28200
 	call os_load_file
-	jc fail
+	jc shellfail
 
 	mov ax, 0
 	mov bx, 0
@@ -156,6 +156,25 @@ commandline:
 	jmp 28200
 	
 slasher:
+	call newline
+	mov si, openbracket
+	call printstring
+	mov ax, loggedinuser
+	call os_string_uppercase
+	mov si, ax
+	call printstring
+	mov si, closebracket
+	call printstring
+	mov si, delim
+	call printstring
+	mov ax, input
+	mov bx, 64
+	call getinput
+	mov ax, input
+	call os_string_chomp
+	mov si, ax
+	call split
+	mov si, ax
 	mov di, adduser_cmd
 	call stringcompare
 	jc cmd_adduser
@@ -164,7 +183,7 @@ slasher:
 	mov si, slasherror
 	call printstring
 	
-	jmp commandline
+	jmp slasher
 
 adduser_cmd db "adduser", 0
 newusername db "New username: ", 0
