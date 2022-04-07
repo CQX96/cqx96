@@ -25,6 +25,7 @@ jmp os_string_to_int      ;0036h
 jmp os_get_file_size      ;0039h
 jmp program_file 		  ;003Ch
 jmp login		 		  ;003Fh [for logout command(?)]
+jmp get_username		  ;0042h
 disk_buff	equ	24576
 cqx:
 	cli
@@ -154,6 +155,10 @@ commandline:
 	mov di, 0
 
 	jmp 28200
+
+get_username:
+	mov si, loggedinuser
+	ret
 	
 slasher:
 	cmp byte [isslash], 0
