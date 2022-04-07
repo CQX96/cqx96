@@ -300,7 +300,6 @@ actual_fail:
 	jmp commandline
 	
 program_file:
-	mov ax, input
 	mov bx, 0
 	mov cx, 40960
 	call os_load_file
