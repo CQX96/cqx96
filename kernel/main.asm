@@ -27,6 +27,9 @@ jmp program_file          ;003Ch
 jmp login		  ;003Fh [for logout command(?)]
 jmp get_username	  ;0042h
 jmp os_string_uppercase   ;0045h
+jmp graphics_init	  ;0048h [Enable graphics mode]
+jmp graphprint	    	  ;004Bh [For graphics mode]
+jmp graphics_uninit	  ;004Eh [Disable graphics mode]
 disk_buff	equ	24576
 cqx:
 	cli
@@ -442,4 +445,5 @@ usrext		  db ".USR", 0
 %include "../fs/handler/null.asm"
 %include "../fs/handler/sbeep.asm"
 %include "../kernel/panic.asm"
+%include "../kernel/includes/graphics/enabler.asm"
 %include "../kernel/includes/ini.asm"
