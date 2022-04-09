@@ -30,6 +30,8 @@ jmp os_string_uppercase   ;0045h
 jmp graphics_init	  ;0048h [Enable graphics mode]
 jmp graphprint	    	  ;004Bh [For graphics mode]
 jmp graphics_uninit	  ;004Eh [Disable graphics mode]
+jmp get_uname		  ;0051h
+jmp not_implemented	  ;0054h
 disk_buff	equ	24576
 cqx:
 	cli
@@ -251,6 +253,12 @@ cmd_adduser:
 	call printstring
 	jmp commandline
 
+not_implemented:
+	call newline
+	mov si, notimpl
+	call printstring
+	ret
+	
 load_daemon:     ; in=ax=daemon name, out=ax=success(0)||fail(1)
 	push ax
 	call newline
