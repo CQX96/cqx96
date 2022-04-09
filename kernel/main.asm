@@ -456,7 +456,7 @@ noting        db 0
 ver           db "0.05",0
 uname         db "CQX96 16-bit ",0
 uname_val     times 26 db 0
-shellname     db "MAIN.SHL", 0
+shellname     db "SH.PRG", 0
 input 		  times 64 db 0
 usrfile 	  times 13 db 0
 usrext		  db ".USR", 0
