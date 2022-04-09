@@ -202,7 +202,8 @@ adduser_cmd db "adduser", 0
 newusername db "New username: ", 0
 newpassword db "New password: ", 0
 nonewslash  db "You cannot create another SLASH user.", 0
-critical db "Critical error.", 0
+notimpl	    db "Function not implemented.", 0 
+critical    db "Critical error.", 0
 
 cmd_adduser:
 	call newline
