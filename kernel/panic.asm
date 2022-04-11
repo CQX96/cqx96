@@ -1,3 +1,8 @@
+; PANIC.ASM
+; For the CQX96 Kernel
+
+; PANIC.ASM may only be ran if a fatal kernel error occurs.
+
 panic:
 push si
 mov si, panicstr1
