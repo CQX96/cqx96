@@ -3,6 +3,9 @@
 
 ; It is the kernel.
 
+
+
+; API location            API id   Message
 jmp cqx                   ;0000h   [bootloader]
 jmp printstring           ;0003h
 jmp commandline           ;0006h
@@ -95,6 +98,11 @@ no_change:
 	call newline
 	mov si, welcome
 	call printstring
+	
+;
+; The LOGIN function is for logging into the system.
+; You can type "/" to log in as SLASH to create a new user.
+;
 login:	
 	call newline
 	mov si, loginprompt
@@ -145,7 +153,10 @@ login:
 slashuser:
 	mov byte [isslash], 1
 	jmp slasher
-	
+
+;
+; COMMANDLINE loads the shell.
+;
 commandline:	
 	mov ax, shellname
 	mov bx, 0
@@ -161,10 +172,16 @@ commandline:
 	mov di, 0
 
 	jmp 32768
-
+;
+; GET_USERNAME gets the logged in user name
+;
 get_username:
 	mov si, loggedinuser
 	ret
+	
+;
+; SLASHER is the built-in shell for the SLASH user.
+;
 	
 slasher:
 	cmp byte [isslash], 0
@@ -310,6 +327,10 @@ actual_fail:
 	call newline
 	call printstring
 	jmp commandline
+	
+;
+; Gets the "unix" name for the kernel
+;
 	
 get_uname:
 	mov ax, uname
