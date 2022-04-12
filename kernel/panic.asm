@@ -3,6 +3,9 @@
 
 ; PANIC.ASM may only be ran if a fatal kernel error occurs.
 
+
+; PANIC
+; SI = Panic reason message
 panic:
     push si             ; Push the message to the stack
     mov si, panicstr1
