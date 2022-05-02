@@ -1291,7 +1291,9 @@ change_device:		; note: AX = New device ID
 	mov [bootdev], ax
 	ret
 	
-
+get_device:		; out: SI = device ID/Number
+	mov si, [bootdev]
+	ret
 
 
 disk_convert_l2hts:
