@@ -52,7 +52,7 @@ cqx:
 	mov gs, ax
 
 	cmp dl, 0
-	je no_change
+	je no_change			; No change needed.
 	mov [bootdev], dl
 	push es
 	mov ah, 8
@@ -63,7 +63,7 @@ cqx:
 	movzx dx, dh
 	add dx, 1
 	mov [Sides], dx
-	
+
 no_change:
 	mov ax, sysload_dmn
 	call load_daemon
@@ -276,7 +276,7 @@ not_implemented:
 	mov si, notimpl
 	call printstring
 	ret
-	
+
 load_daemon:     ; in=ax=daemon name, out=ax=success(0)||fail(1)
 	push ax
 	call newline
@@ -299,6 +299,7 @@ load_daemon:     ; in=ax=daemon name, out=ax=success(0)||fail(1)
 	
 	ret
 
+; No shell found, you need a shell else you can't do anything.
 shellfail:
 	mov si, noshellfound
 	jmp panic
