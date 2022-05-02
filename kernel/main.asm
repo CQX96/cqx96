@@ -33,8 +33,21 @@ jmp os_string_uppercase   ;0045h
 jmp graphics_init	  ;0048h [Enable graphics mode]
 jmp graphprint	    	  ;004Bh [For graphics mode]
 jmp graphics_uninit	  ;004Eh [Disable graphics mode]
+
+
+; In = 
+;	NONE
+; Out =
+;	SI: Uname
 jmp get_uname		  ;0051h
 jmp not_implemented	  ;0054h
+
+
+; In = 
+;	AX: Buffer to store file list into
+; Out =
+;	NONE
+jmp os_get_file_list      ;0057h [get a list of files]
 disk_buff	equ	24576
 cqx:
 	cli
