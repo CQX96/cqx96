@@ -48,6 +48,8 @@ jmp not_implemented	  ;0054h
 ; Out =
 ;	NONE
 jmp os_get_file_list      ;0057h [get a list of files]
+jmp change_device         ;005Ah [change current device number, AX=new number]
+jmp get_device            ;005Ah [get current device number, SI=number]
 disk_buff	equ	24576
 cqx:
 	cli
