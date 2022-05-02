@@ -475,7 +475,7 @@ openbracket   db "[",0
 closebracket  db "]",0
 rngo          db 0
 noting        db 0
-ver           db "0.05",0
+%include "../kernel/includes/version.asm" 
 uname         db "CQX96 16-bit ",0
 uname_val     times 26 db 0
 shellname     db "SH.PRG", 0
