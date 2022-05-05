@@ -335,8 +335,7 @@ load_daemon:     ; in=ax=daemon name, out=ax=success(0)||fail(1)
 %endif
 ; No shell found, you need a shell else you can't do anything.
 shellfail:
-	mov si, noshellfound
-	jmp panic
+	jmp $
 	
 fail:
 	mov ax, input
