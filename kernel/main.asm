@@ -27,13 +27,23 @@ jmp os_string_compare     ;0033h
 jmp os_string_to_int      ;0036h
 jmp os_get_file_size      ;0039h
 jmp program_file          ;003Ch
+%ifdef LOGIN_SYSTEM
 jmp login		  ;003Fh [for logout command(?)]
 jmp get_username	  ;0042h
+%else
+jmp not_implemented	  ;003Fh
+jmp not_implemented	  ;0042h
+%endif
 jmp os_string_uppercase   ;0045h
+%ifdef GRAPHICS_SUPPORT
 jmp graphics_init	  ;0048h [Enable graphics mode]
 jmp graphprint	    	  ;004Bh [For graphics mode]
 jmp graphics_uninit	  ;004Eh [Disable graphics mode]
-
+%else
+jmp not_implemented	  ;0048h
+jmp not_implemented	  ;004Bh
+jmp not_implemented	  ;004Eh
+%endif
 
 ; In = 
 ;	NONE
@@ -80,6 +90,7 @@ cqx:
 	mov [Sides], dx
 
 no_change:
+%ifdef LOAD_SCREEN
 	mov ax, sysload_dmn
 	call load_daemon
 	mov ax, filesys_dmn
@@ -92,7 +103,7 @@ no_change:
 	call newline
 	mov cl, 9
 	call wait_ticks_again
-	
+%endif	
 	mov ah,06h	; Clear screen.
 	mov al,00h
 	mov bh,07h
@@ -111,6 +122,7 @@ no_change:
 	mov si, space
 	call printstring	
 	call newline
+%ifdef LOGIN_SYSTEM
 	mov si, welcome
 	call printstring
 	
@@ -166,6 +178,7 @@ login:
 	jmp login
 	
 slashuser:
+%endif
 	mov byte [isslash], 1
 	jmp slasher
 
@@ -199,6 +212,7 @@ get_username:
 ;
 	
 slasher:
+%ifdef LOGIN_SYSTEM
 	cmp byte [isslash], 0
 	je commandline
 	call newline
@@ -234,7 +248,6 @@ adduser_cmd db "adduser", 0
 newusername db "New username: ", 0
 newpassword db "New password: ", 0
 nonewslash  db "You cannot create another SLASH user.", 0
-notimpl	    db "Function not implemented.", 0 
 critical    db "Critical error.", 0
 
 cmd_adduser:
@@ -285,13 +298,19 @@ cmd_adduser:
 	mov si, nonewslash
 	call printstring
 	jmp commandline
+%else
+	jmp commandline
+%endif
+
+
+notimpl	    db "Function not implemented.", 0 
 
 not_implemented:
 	call newline
 	mov si, notimpl
 	call printstring
 	ret
-
+%ifdef LOAD_SCREEN
 load_daemon:     ; in=ax=daemon name, out=ax=success(0)||fail(1)
 	push ax
 	call newline
@@ -313,7 +332,7 @@ load_daemon:     ; in=ax=daemon name, out=ax=success(0)||fail(1)
 	mov ax, 0
 	
 	ret
-
+%endif
 ; No shell found, you need a shell else you can't do anything.
 shellfail:
 	mov si, noshellfound
@@ -501,5 +520,7 @@ usrext		  db ".USR", 0
 %include "../fs/handler/null.asm"
 %include "../fs/handler/sbeep.asm"
 %include "../kernel/panic.asm"
+%ifdef GRAPHICS_SUPPORT
 %include "../kernel/includes/graphics/enabler.asm"
+%endif
 %include "../kernel/includes/ini.asm"
