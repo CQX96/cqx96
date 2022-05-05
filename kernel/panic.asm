@@ -3,6 +3,7 @@
 
 ; PANIC.ASM may only be ran if a fatal kernel error occurs.
 
+%ifndef IGNORE_PANICS
 
 ; PANIC
 ; SI = Panic reason message
@@ -18,3 +19,5 @@ jmp $
 
 panicstr1 db 13,10,"Kernel Panic: ", 0
 panicstr2 db 13,10,"System halted.", 0
+
+%endif
