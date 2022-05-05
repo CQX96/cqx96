@@ -1,10 +1,30 @@
-echo "MAKE for CQX96"
+graphics_support="y"
+login_system="y"
+ignore_panics="n"
+load_screen="n"
 
+
+
+echo "MAKE for CQX96"
+echo "Preprocessing configuration..."
+config=""
+if [ "$graphics_support" == "y" ]; then
+   config="$config -dGRAPHICS_SUPPORT=1"
+fi
+if [ "$login_system" == "y" ]; then
+   config="$config -dLOGIN_SYSTEM=1"
+fi
+if [ "$ignore_panics" == "y" ]; then
+   config="$config -dIGNORE_PANICS=1"
+fi
+if [ "$load_screen" == "y" ]; then
+   config="$config -dLOAD_SCREEN=1"
+fi
 echo "Assembling..."
 nasm -O0 -f bin -o boot.bin main.asm
 nasm -O0 -f bin -o build/Setup.img boot/setup.asm
 cd main
-nasm -O0 -f bin -o ../kernel/cqx96.sys main.asm
+nasm -O0$config -f bin -o ../kernel/cqx96.sys main.asm
 cd ../programs
 rm *.prg
 for i in *.asm
