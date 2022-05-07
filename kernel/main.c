@@ -1,16 +1,10 @@
 #include "kernel.h"
 
-/*
-16 bit video buffer elements(register ax)
-8 bits(ah) higher : 
-  lower 4 bits - forec olor
-  higher 4 bits - back color
+extern int cqx();
 
-8 bits(al) lower :
-  8 bits : ASCII character to print
-*/
 void kernel_entry()
 {
+
   //first init vga with fore & back colors
   init_vga(WHITE, BLACK);
 
@@ -29,6 +23,15 @@ void kernel_entry()
   vga_buffer[10] = vga_entry('d', WHITE, BLACK);
 }
 
+/*
+16 bit video buffer elements(register ax)
+8 bits(ah) higher : 
+  lower 4 bits - forec olor
+  higher 4 bits - back color
+
+8 bits(al) lower :
+  8 bits : ASCII character to print
+*/
 uint16 vga_entry(unsigned char ch, uint8 fore_color, uint8 back_color) 
 {
   uint16 ax = 0;
