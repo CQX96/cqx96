@@ -16,6 +16,15 @@ Currently, CQX96 supports the FAT file system.
 This operating system has been tested and worked on these computers:
   1. Acer Aspire 3690
 
+FEATURES
+========
+
+CQX96 has a custom interrupt number: int 96h
+It also has FAT filesystem support
+
+CQX96 DOES NOT COME WITH A SHELL BY DEFAULT!
+You can compile the shell template at https://github.com/CQX96/cqx96-apps/blob/main/shelltemplate.asm
+
 NOTE 1
 ======
 
