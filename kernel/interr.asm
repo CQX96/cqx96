@@ -24,3 +24,22 @@ kernel_new_interrupt:
 	sti
 	popa
 	ret
+
+printstring_i:
+	 call printstring
+	 iret
+commandline_i:
+	 call commandline
+	 iret
+newline_i:
+	 call newline
+	 iret
+
+int96h:
+	cmp ah, 00h
+	je printstring_i
+	cmp ah, 01h
+	je commandline_i
+	cmp ah, 02h
+	je newline_i
+	iret
