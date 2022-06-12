@@ -3,7 +3,7 @@
 
 ; PANIC.ASM may only be ran if a fatal kernel error occurs.
 
-%ifndef IGNORE_PANICS
+%ifndef IGNORE_PANICS       ; Only enable IGNORE_PANICS when debugging
 
 ; PANIC
 ; SI = Panic reason message
