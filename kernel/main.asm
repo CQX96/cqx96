@@ -5,6 +5,8 @@
 
 
 
+; Some functions are also available in int 96h
+
 ; API location            API id   Message
 jmp cqx                   ;0000h   [bootloader]
 jmp printstring           ;0003h
@@ -104,6 +106,10 @@ no_change:
 	mov cl, 9
 	call wait_ticks_again
 %endif	
+	mov cx, 96h			; Create new interrupt int 96h
+	mov si, int96h		; Interrupt label (see interr.asm)
+	call kernel_new_interrupt
+
 	mov ah,06h	; Clear screen.
 	mov al,00h
 	mov bh,07h
@@ -489,6 +495,7 @@ fn            db '            ',0
 %include "../include/mike/sound.asm"
 slash         db '/',0
 loggedinuser  times 10 db 0
+%include "../kernel/interr.asm"
 %include "../include/mike/string.asm"
 isslash       db 0
 welcome       db 'Welcome to CQX96!', 0
