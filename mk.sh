@@ -2,6 +2,7 @@ graphics_support="y"
 login_system="y"
 ignore_panics="n"
 load_screen="n"
+md5_hash="y"
 
 
 
@@ -19,6 +20,9 @@ if [ "$ignore_panics" == "y" ]; then
 fi
 if [ "$load_screen" == "y" ]; then
    config="$config -dLOAD_SCREEN=1"
+fi
+if [ "$md5_hash" == "y" ]; then
+   config="$config -dMD5_HASH=1"
 fi
 echo "Assembling..."
 nasm -O0 -f bin -o boot.bin main.asm
