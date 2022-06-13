@@ -1,243 +1,172 @@
-; CRYPT.ASM
-; For the CQX96 Kernel
+%ifdef MD5_HASH
 
+md5_for_display times 16 db 0
+HEX_CHARS db '0123456789ABCDEF'
 
-; https://github.com/rwfpl/rewolf-md5
-
-
-
-
-
-
-S11 equ 7
-S12 equ 12
-S13 equ 17
-S14 equ 22
-S21 equ 5
-S22 equ 9
-S23 equ 14
-S24 equ 20
-S31 equ 4
-S32 equ 11
-S33 equ 16
-S34 equ 23
-S41 equ 6
-S42 equ 10
-S43 equ 15
-S44 equ 21
-
-%macro FF 7 ;a,b,c,d,k,s,i 
-	mov	edi,%2
-	mov	ebp,%2
-	and	edi,%3
-	not	ebp
-	and	ebp,%4
-	or	edi,ebp
-	lea	%1,dword [%1+edi+%7]
-	add	%1,dword [esi+%5*4]
-	rol	%1,%6
-	add	%1,%2
-%endmacro
-
-%macro GG 7
-	mov	edi,%4
-	mov	ebp,%4
-	and	edi,%2
-	not	ebp
-	and	ebp,%3
-	or	edi,ebp
-	lea	%1,dword [%1+edi+%7]
-	add	%1,dword [esi+%5*4]
-	rol	%1,%6
-	add	%1,%2
-%endmacro
-
-%macro	HH	7
-	mov	ebp,%2
-	xor	ebp,%3
-	xor	ebp,%4
-	lea	%1,dword [%1+ebp+%7]
-	add	%1,dword [esi+%5*4]
-	rol	%1,%6
-	add	%1,%2
-%endmacro
-
-%macro	II	7
-	mov	ebp,%4
-	not	ebp
-	or	ebp,%2
-	xor	ebp,%3
-	lea	%1,dword [%1+ebp+%7]
-	add	%1,dword [esi+%5*4]
-	rol	%1,%6
-	add	%1,%2
-%endmacro
-
-_rwf_md5: 
-	pushad
-	mov	esi,dword [esp+04h+8*4]
-	mov	dword [esi], 067452301h
-	mov	dword [esi+04h], 0efcdab89h
-	mov	dword [esi+08h], 098badcfeh
-	mov	dword [esi+0Ch], 010325476h
-	mov	eax,dword [esp+0Ch+8*4]
-	push	eax
-	xor	edx,edx
-	mov	ecx,64
-	div	ecx
-	inc	eax
-	pop	edx
-	sub	esp,64
-	mov	ebx,esp
-	mov	esi,dword [esp+08h+24*4]
-	xchg	eax,edx
-_n0:
-	mov	edi,ebx
-	dec	edx
-	jne	_n1
-	test	eax,eax
-	js	_nD
-	mov	byte [ebx+eax],80h
-	jmp	_nC
-_nD:
-	xor	eax,eax
-	dec	eax
-_nC:
-	mov	ecx,64
-	sub	ecx,eax
-	add	edi,eax
-	push	eax
-	xor	eax,eax
-	inc	edi
-	dec	ecx
-	rep	stosb
-	pop	eax
-	test	eax,eax
-	js	_nB
-	cmp	eax,56
-	jnb	_nE
-_nB:
-	push	eax
-	mov	eax,dword [esp+0Ch+25*4]
-	push	edx
-	xor	edx,edx
-	mov	ecx,8
-	mul	ecx
-	mov	dword [ebx+56],eax
-	mov	dword [ebx+60],edx
-	pop	edx
-	pop	eax
-	jmp	_n1
-_nE:
-	inc	edx
-_n1:
-	test	eax,eax
-	js	_nA
-	cmp	eax,64
-	jnb	_n2
-	jmp	_n10
-_nA:
-	xor	eax,eax
-_n10:
-	mov	ecx,eax
-	jmp	_n3
-_n2:
-	mov	ecx,64
-_n3:
-	mov	edi,ebx
+compute_md5:
+	; si > input bytes, cx = input len, di > 16-byte output buffer
+	; assumes all in the same segment
+	cld
+	pusha
+	push	di
+	push	si
+	mov	[message_len], cx
+ 
+	mov	bx, cx
+	shr	bx, 6
+	mov	[ending_bytes_block_num], bx
+	mov	[num_blocks], bx
+	inc	word [num_blocks]
+	shl	bx, 6
+	add	si, bx
+	and	cx, 0x3f
+	push	cx
+	mov	di, ending_bytes
 	rep	movsb
+	mov	al, 0x80
+	stosb
+	pop	cx
+	sub	cx, 55
+	neg	cx
+	jge	add_padding
+	add	cx, 64
+	inc	word [num_blocks]
+add_padding:
+	mov	al, 0
+	rep	stosb
+	xor	eax, eax
+	mov	ax, [message_len]
+	shl	eax, 3
+	mov	cx, 8
+store_message_len:
+	stosb
+	shr	eax, 8
+	dec	cx
+	jnz	store_message_len
+	pop	si
+	mov	[md5_a], dword INIT_A
+	mov	[md5_b], dword INIT_B
+	mov	[md5_c], dword INIT_C
+	mov	[md5_d], dword INIT_D
+block_loop:
+	push	cx
+	cmp	cx, [ending_bytes_block_num]
+	jne	backup_abcd
+	; switch buffers if towards the end where padding needed
+	mov	si, ending_bytes
+backup_abcd:
+	push	dword [md5_d]
+	push	dword [md5_c]
+	push	dword [md5_b]
+	push	dword [md5_a]
+	xor	cx, cx
+	xor	eax, eax
+main_loop:
+	push	cx
+	mov	ax, cx
+	shr	ax, 4
+	test	al, al
+	jz	pass0
+	cmp	al, 1
+	je	pass1
+	cmp	al, 2
+	je	pass2
+	; pass3
+	mov	eax, [md5_c]
+	mov	ebx, [md5_d]
+	not	ebx
+	or	ebx, [md5_b]
+	xor	eax, ebx
+	jmp	do_rotate
+ 
+pass0:
+	mov	eax, [md5_b]
+	mov	ebx, eax
+	and	eax, [md5_c]
+	not	ebx
+	and	ebx, [md5_d]
+	or	eax, ebx
+	jmp	do_rotate
+ 
+pass1:
+	mov	eax, [md5_d]
+	mov	edx, eax
+	and	eax, [md5_b]
+	not	edx
+	and	edx, [md5_c]
+	or	eax, edx
+	jmp	do_rotate
+ 
+pass2:
+	mov	eax, [md5_b]
+	xor	eax, [md5_c]
+	xor	eax, [md5_d]
+do_rotate:
+	add	eax, [md5_a]
+	mov	bx, cx
+	shl	bx, 1
+	mov	bx, [BUFFER_INDEX_TABLE + bx]
+	add	eax, [si + bx]
+	mov	bx, cx
+	shl	bx, 2
+	add	eax, dword [TABLE_T + bx]
+	mov	bx, cx
+	ror	bx, 2
+	shr	bl, 2
+	rol	bx, 2
+	mov	cl, [SHIFT_AMTS + bx]
+	rol	eax, cl
+	add	eax, [md5_b]
 	push	eax
-	push	edx
-	push	ebx
-	push	esi
-	lea	esi,dword [esp+10h]
-	mov	edi,dword [esp+4+28*4]
-	push	edi
-	mov	eax,dword [edi]
-	mov	ebx,dword [edi+04h]
-	mov	ecx,dword [edi+08h]
-	mov	edx,dword [edi+0Ch]
-
-	FF	eax, ebx, ecx, edx, 0, S11, 0d76aa478h
-	FF	edx, eax, ebx, ecx, 1, S12, 0e8c7b756h
-	FF	ecx, edx, eax, ebx, 2, S13, 0242070dbh
-	FF	ebx, ecx, edx, eax, 3, S14, 0c1bdceeeh
-	FF	eax, ebx, ecx, edx, 4, S11, 0f57c0fafh
-	FF	edx, eax, ebx, ecx, 5, S12, 04787c62ah
-	FF	ecx, edx, eax, ebx, 6, S13, 0a8304613h
-	FF	ebx, ecx, edx, eax, 7, S14, 0fd469501h
-	FF	eax, ebx, ecx, edx, 8, S11, 0698098d8h
-	FF	edx, eax, ebx, ecx, 9, S12, 08b44f7afh
-	FF	ecx, edx, eax, ebx, 10, S13, 0ffff5bb1h
-	FF	ebx, ecx, edx, eax, 11, S14, 0895cd7beh
-	FF	eax, ebx, ecx, edx, 12, S11, 06b901122h
-	FF	edx, eax, ebx, ecx, 13, S12, 0fd987193h
-	FF	ecx, edx, eax, ebx, 14, S13, 0a679438eh
-	FF	ebx, ecx, edx, eax, 15, S14, 049b40821h
-
-	GG	eax, ebx, ecx, edx, 1, S21, 0f61e2562h
-	GG	edx, eax, ebx, ecx, 6, S22, 0c040b340h
-	GG	ecx, edx, eax, ebx,11, S23, 0265e5a51h
-	GG	ebx, ecx, edx, eax, 0, S24, 0e9b6c7aah
-	GG	eax, ebx, ecx, edx, 5, S21, 0d62f105dh
-	GG	edx, eax, ebx, ecx,10, S22, 002441453h
-	GG	ecx, edx, eax, ebx,15, S23, 0d8a1e681h
-	GG	ebx, ecx, edx, eax, 4, S24, 0e7d3fbc8h
-	GG	eax, ebx, ecx, edx, 9, S21, 021e1cde6h
-	GG	edx, eax, ebx, ecx,14, S22, 0c33707d6h
-	GG	ecx, edx, eax, ebx, 3, S23, 0f4d50d87h
-	GG	ebx, ecx, edx, eax, 8, S24, 0455a14edh
-	GG	eax, ebx, ecx, edx,13, S21, 0a9e3e905h
-	GG	edx, eax, ebx, ecx, 2, S22, 0fcefa3f8h
-	GG	ecx, edx, eax, ebx, 7, S23, 0676f02d9h
-	GG	ebx, ecx, edx, eax,12, S24, 08d2a4c8ah
-
-	HH	eax, ebx, ecx, edx, 5, S31, 0fffa3942h
-	HH	edx, eax, ebx, ecx, 8, S32, 08771f681h
-	HH	ecx, edx, eax, ebx,11, S33, 06d9d6122h
-	HH	ebx, ecx, edx, eax,14, S34, 0fde5380ch
-	HH	eax, ebx, ecx, edx, 1, S31, 0a4beea44h
-	HH	edx, eax, ebx, ecx, 4, S32, 04bdecfa9h
-	HH	ecx, edx, eax, ebx, 7, S33, 0f6bb4b60h
-	HH	ebx, ecx, edx, eax,10, S34, 0bebfbc70h
-	HH	eax, ebx, ecx, edx,13, S31, 0289b7ec6h
-	HH	edx, eax, ebx, ecx, 0, S32, 0eaa127fah
-	HH	ecx, edx, eax, ebx, 3, S33, 0d4ef3085h
-	HH	ebx, ecx, edx, eax, 6, S34, 004881d05h
-	HH	eax, ebx, ecx, edx, 9, S31, 0d9d4d039h
-	HH	edx, eax, ebx, ecx,12, S32, 0e6db99e5h
-	HH	ecx, edx, eax, ebx,15, S33, 01fa27cf8h
-	HH	ebx, ecx, edx, eax, 2, S34, 0c4ac5665h
-
-	II	eax, ebx, ecx, edx, 0, S41, 0f4292244h
-	II	edx, eax, ebx, ecx, 7, S42, 0432aff97h
-	II	ecx, edx, eax, ebx,14, S43, 0ab9423a7h
-	II	ebx, ecx, edx, eax, 5, S44, 0fc93a039h
-	II	eax, ebx, ecx, edx,12, S41, 0655b59c3h
-	II	edx, eax, ebx, ecx, 3, S42, 08f0ccc92h
-	II	ecx, edx, eax, ebx,10, S43, 0ffeff47dh
-	II	ebx, ecx, edx, eax, 1, S44, 085845dd1h
-	II	eax, ebx, ecx, edx, 8, S41, 06fa87e4fh
-	II	edx, eax, ebx, ecx,15, S42, 0fe2ce6e0h
-	II	ecx, edx, eax, ebx, 6, S43, 0a3014314h
-	II	ebx, ecx, edx, eax,13, S44, 04e0811a1h
-	II	eax, ebx, ecx, edx, 4, S41, 0f7537e82h
-	II	edx, eax, ebx, ecx,11, S42, 0bd3af235h
-	II	ecx, edx, eax, ebx, 2, S43, 02ad7d2bbh
-	II	ebx, ecx, edx, eax, 9, S44, 0eb86d391h
-
-	pop	edi
-	add	dword [edi],eax
-	add	dword [edi+04h],ebx
-	add	dword [edi+08h],ecx
-	add	dword [edi+0Ch],edx
-	pop	esi
-	pop	ebx
-	pop	edx
+	push	dword [md5_b]
+	push	dword [md5_c]
+	push	dword [md5_d]
+	pop	dword [md5_a]
+	pop	dword [md5_d]
+	pop	dword [md5_c]
+	pop	dword [md5_b]
+	pop	cx
+	inc	cx
+	cmp	cx, 64
+	jb	main_loop
+	; add to original values
 	pop	eax
-	sub	eax,64
-	test	edx,edx
-	jne	_n0
-	add	esp,64
-	popad
-	ret	0Ch
+	add	[md5_a], eax
+	pop	eax
+	add	[md5_b], eax
+	pop	eax
+	add	[md5_c], eax
+	pop	eax
+	add	[md5_d], eax
+	; increase pointers
+	add	si, 64
+	pop	cx
+	inc	cx
+	cmp	cx, [num_blocks]
+	jne	block_loop
+	mov	cx, 4
+	mov	si, md5_a
+	pop	di
+	rep	movsd
+	popa
+	ret
+ 
+INIT_A equ 0x67452301
+INIT_B equ 0xEFCDAB89
+INIT_C equ 0x98BADCFE
+INIT_D equ 0x10325476
+ 
+SHIFT_AMTS db 7, 12, 17, 22, 5,  9, 14, 20, 4, 11, 16, 23, 6, 10, 15, 21
+ 
+TABLE_T dd 0xD76AA478, 0xE8C7B756, 0x242070DB, 0xC1BDCEEE, 0xF57C0FAF, 0x4787C62A, 0xA8304613, 0xFD469501, 0x698098D8, 0x8B44F7AF, 0xFFFF5BB1, 0x895CD7BE, 0x6B901122, 0xFD987193, 0xA679438E, 0x49B40821, 0xF61E2562, 0xC040B340, 0x265E5A51, 0xE9B6C7AA, 0xD62F105D, 0x02441453, 0xD8A1E681, 0xE7D3FBC8, 0x21E1CDE6, 0xC33707D6, 0xF4D50D87, 0x455A14ED, 0xA9E3E905, 0xFCEFA3F8, 0x676F02D9, 0x8D2A4C8A, 0xFFFA3942, 0x8771F681, 0x6D9D6122, 0xFDE5380C, 0xA4BEEA44, 0x4BDECFA9, 0xF6BB4B60, 0xBEBFBC70, 0x289B7EC6, 0xEAA127FA, 0xD4EF3085, 0x04881D05, 0xD9D4D039, 0xE6DB99E5, 0x1FA27CF8, 0xC4AC5665, 0xF4292244, 0x432AFF97, 0xAB9423A7, 0xFC93A039, 0x655B59C3, 0x8F0CCC92, 0xFFEFF47D, 0x85845DD1, 0x6FA87E4F, 0xFE2CE6E0, 0xA3014314, 0x4E0811A1, 0xF7537E82, 0xBD3AF235, 0x2AD7D2BB, 0xEB86D391
+BUFFER_INDEX_TABLE dw 0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 4, 24, 44, 0, 20, 40, 60, 16, 36, 56, 12, 32, 52, 8, 28, 48, 20, 32, 44, 56, 4, 16, 28, 40, 52, 0, 12, 24, 36, 48, 60, 8, 0, 28, 56, 20, 48, 12, 40, 4, 32, 60, 24, 52, 16, 44, 8, 36
+ending_bytes_block_num dw 0
+ending_bytes times 128 db 0
+message_len dw 0
+num_blocks dw 0
+md5_a dd 0
+md5_b dd 0
+md5_c dd 0
+md5_d dd 0
+
+%endif
