@@ -163,11 +163,24 @@ login:
 	mov ax, input
 	mov bx, 32
 	call getinput
+%ifdef MD5_HASH
+	push ax
+	mov ax, input
+	call os_string_chomp
+	mov si, ax
+	pop cx
+	mov di, md5buffer
+	call compute_md5
+	mov si, md5buffer
+	mov di, 32768
+	call stringcompare
+%else
 	mov ax, input
 	call os_string_chomp
 	mov si, ax
 	mov di, 32768
 	call stringcompare
+%endif
 	jc commandline
 	jmp .incorrect
 	
@@ -529,5 +542,8 @@ usrext		  db ".USR", 0
 %ifdef GRAPHICS_SUPPORT
 %include "../kernel/includes/graphics/enabler.asm"
 %endif
-%include "../include/tools/crypt.asm" 
+%include "../include/tools/crypt.asm"
+%ifdef MD5_HASH
+md5buffer     times 17 db 0
+%endif
 %include "../kernel/includes/ini.asm"
