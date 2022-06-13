@@ -32,6 +32,7 @@ getinput:
 	dec bx
 	mov cx, bx
 
+	jmp .get_char
 .get_chare:
 	pop ax
 .get_char:
