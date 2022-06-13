@@ -529,4 +529,5 @@ usrext		  db ".USR", 0
 %ifdef GRAPHICS_SUPPORT
 %include "../kernel/includes/graphics/enabler.asm"
 %endif
+%include "../include/tools/crypt.asm" 
 %include "../kernel/includes/ini.asm"
