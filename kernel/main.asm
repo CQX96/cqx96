@@ -300,12 +300,24 @@ cmd_adduser:
 	call os_string_length
 	push ax
 	mov dx, input
+%ifdef MD5_HASH
+	pop cx
+	mov si, input
+	mov di, md5buffer
+	call compute_md5
 	
+	mov ax, usrfile
+	mov bx, md5buffer
+	mov cx, 16
+	call os_write_file
+%else
 	mov ax, usrfile
 	mov bx, dx
 	mov word cx, 32
 	call os_write_file
-	jmp slasher
+%endif
+	jmp commandline
+	
 .actual_fail:
 	call newline
 	mov si, critical
