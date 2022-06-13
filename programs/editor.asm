@@ -1,3 +1,6 @@
+;@DESC Default text editor for the CQX96 kernel
+;@NAME Editor96
+
 ; EDITOR.ASM
 ; For the CQX96 Kernel
 
