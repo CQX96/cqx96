@@ -164,6 +164,8 @@ login:
 	mov bx, 32
 	call getinput
 %ifdef MD5_HASH
+	mov ax, input
+	call os_string_length
 	push ax
 	mov ax, input
 	call os_string_chomp
@@ -366,8 +368,12 @@ load_daemon:     ; in=ax=daemon name, out=ax=success(0)||fail(1)
 %endif
 ; No shell found, you need a shell else you can't do anything.
 shellfail:
+%ifdef IGNORE_PANICS
 	jmp $
-	
+%else
+	mov si, noshellfound
+	jmp panic
+%endif
 fail:
 	mov ax, input
 	mov bx, prg_extension
