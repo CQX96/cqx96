@@ -316,7 +316,7 @@ cmd_adduser:
 	mov word cx, 32
 	call os_write_file
 %endif
-	jmp commandline
+	jmp slasher
 	
 .actual_fail:
 	call newline
