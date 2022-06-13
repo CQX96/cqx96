@@ -76,7 +76,7 @@ getinput:
 	ret
 
 
-.backspace:							; This used to not work for a while, but it works now. (Not at the time of writing this, but in release 1.0 :-)
+.backspace:
 	mov bh, 0
 	mov ah, 3
 	int 10h
