@@ -21,7 +21,10 @@ FEATURES
 ========
 
 CQX96 has a custom interrupt number: int 96h
+
 It also has FAT filesystem support
+
+Login system, passwords are hashed with MD5
 
 CQX96 DOES NOT COME WITH A SHELL BY DEFAULT!
 You can compile the shell template at https://github.com/CQX96/cqx96-apps/blob/main/shelltemplate.asm
