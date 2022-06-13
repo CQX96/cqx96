@@ -1,3 +1,4 @@
+#!/bin/bash
 graphics_support="y"
 login_system="y"
 ignore_panics="n"
