@@ -78,8 +78,8 @@ cqx:
 	mov fs, ax
 	mov gs, ax
 
-	cmp dl, 0
-	je no_change			; No change needed.
+	cmp dl, 0			; If boot device = floppy (default)
+	je no_change			; Then no change is needed.
 	mov [bootdev], dl
 	push es
 	mov ah, 8
@@ -171,13 +171,13 @@ login:
 	jc commandline
 	jmp .incorrect
 	
-.incorrect:
+.incorrect:			; Incorrect password
 	call newline
 	mov si, incorrectpass
 	call printstring
 	jmp login
 	
-.nosuchuser:
+.nosuchuser:			; Incorrect username
 	call newline
 	mov si, nosuchuser
 	call printstring
