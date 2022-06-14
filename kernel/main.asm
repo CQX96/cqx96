@@ -530,7 +530,7 @@ loggedinuser  times 10 db 0
 %include "../kernel/interr.asm"
 %include "../include/mike/string.asm"
 isslash       db 0
-welcome       db 'Welcome to CQX96!', 0
+welcome       db 'Welcome!', 0
 badcmd        db 'Unknown command or filename.', 0
 delim         db ':', 0
 prg_extension db '.PRG', 0
@@ -538,7 +538,7 @@ incorrectpass db 'Incorrect password,',0
 noshellfound  db 'No shell found!',0
 nosuchuser    db 'That is not a user on this system!',0
 space         db ' ', 0
-loginprompt   db 'CQX96 username (Log in as / if you are a new user): ',13,10,0
+loginprompt   db 'CQX96 username (Log in to / if you are a new user): ',13,10,0
 slasherror    db 'The SLASH user may only create another user (adduser command).',0
 passprompt    db 'Password: ',0
 successms     db '[SUCCESS!] ',0
