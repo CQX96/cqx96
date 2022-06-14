@@ -161,8 +161,8 @@ os_load_file:
 	call disk_reset_floppy		
 	jnc .floppy_ok			
 
-	mov ax, .err_msg_floppy_reset	
-	call 0003h
+	mov si, .err_msg_floppy_reset	
+	jmp panic
 	ret
 
 
@@ -297,8 +297,8 @@ os_load_file:
 	call disk_reset_floppy		
 	jnc .load_file_sector
 
-	mov ax, .err_msg_floppy_reset	
-	call 0003h
+	mov si, .err_msg_floppy_reset	
+	jmp panic
 	ret
 
 
