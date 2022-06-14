@@ -5,7 +5,6 @@ rm *.sys
 cd ..
 cd build
 rm CQX96.img
-rm Setup.usb
 cd ..
 cd programs
 rm *.prg
