@@ -111,6 +111,10 @@ no_change:
 	mov si, int96h		; Interrupt label (see interr.asm)
 	call kernel_new_interrupt
 
+	mov cx, 00h			; Create new divide by zero handler
+	mov si, divide_by_zero		; Interrupt label (see interr.asm)
+	call kernel_new_interrupt
+
 	mov ah,06h	; Clear screen.
 	mov al,00h
 	mov bh,07h
