@@ -34,4 +34,3 @@ os_get_file_list      EQU  0057h
 change_device         EQU  005Ah
 get_device            EQU  005Dh
 os_string_parse       EQU  0060h
-os_get_file_list      EQU  0063h
