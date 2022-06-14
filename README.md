@@ -22,7 +22,7 @@ COMPILING
 ----
 Requirements:
 
-A linux machine
+A linux machine or WSL2 on windows (you might need to install dosfstools)
 
 NASM
 
