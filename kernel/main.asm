@@ -566,3 +566,4 @@ usrext		  db ".USR", 0
 md5buffer     times 17 db 0
 %endif
 %include "../kernel/includes/ini.asm"
+db "github.com/CQX96/cqx96"
