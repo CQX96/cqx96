@@ -6,7 +6,6 @@ os_create_file        EQU  000Ch
 os_remove_file        EQU  000Fh
 getinput              EQU  0012h
 os_write_file         EQU  0015h
-os_load_file          EQU  0018h
 os_string_chomp       EQU  001Bh
 os_int_to_string      EQU  001Eh
 os_load_file          EQU  0021h
