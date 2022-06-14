@@ -177,12 +177,12 @@ exit:
 	je close
 
     mov ax, filename
-    call removefile
+    call os_remove_file
 
     mov ax, filename
 	mov word cx, 2000
 	mov bx, buffer
-	call writefile
+	call os_write_file
 
 close:
 	ret
