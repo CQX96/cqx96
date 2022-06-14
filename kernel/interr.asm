@@ -4,6 +4,9 @@
 ; Interrupt handler things for CQX96
 
 
+divide_by_zero:
+	mov si, divzero
+	jmp panic
 
 
 kernel_new_interrupt:
@@ -43,3 +46,5 @@ int96h:
 	cmp ah, 02h
 	je newline_i
 	iret
+
+divzero db "Divide by zero detected",0
