@@ -19,7 +19,7 @@ This operating system has been tested and worked on these computers:
 
 COMPILING
 =========
-
+----
 Requirements:
 
 A linux machine
@@ -28,6 +28,7 @@ NASM
 
 sudo (root privileges)
 
+----
 
 To compile it, execute mk.sh using sudo, like this:
 
