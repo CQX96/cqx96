@@ -17,6 +17,25 @@ This operating system has been tested and worked on these computers:
   1. Acer Aspire 3690
   2. Some HP computer I don't know the model
 
+COMPILING
+=========
+
+Requirements:
+
+A linux machine
+
+NASM
+
+sudo (root privileges)
+
+
+To compile it, execute mk.sh using sudo, like this:
+
+sudo ./mk.sh
+
+After, a file CQX96.img will appear in the build directory.
+
+
 FEATURES
 ========
 
