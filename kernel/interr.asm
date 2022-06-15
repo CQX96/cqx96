@@ -28,13 +28,13 @@ kernel_new_interrupt:
 	popa
 	ret
 
-printstring_i:
+printstring_i:			; INT 96H, AH = 0
 	 call printstring
 	 iret
-commandline_i:
+commandline_i:			; INT 96H, AH = 1
 	 call commandline
 	 iret
-newline_i:
+newline_i:			; INT 96H, AH = 2
 	 call newline
 	 iret
 
