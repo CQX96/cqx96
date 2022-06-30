@@ -60,8 +60,13 @@ jmp not_implemented	  ;0054h
 ; Out =
 ;	NONE
 jmp os_get_file_list      ;0057h [get all files (seperated with comma), AX = buffer]
+%ifdef MULTI_DEVICE
 jmp change_device         ;005Ah [change current device number, AX=new number]
 jmp get_device            ;005Dh [get current device number, SI=number]
+%else
+jmp not_implemented	  ;0048h
+jmp not_implemented	  ;004Bh
+%endif
 jmp os_string_parse       ;0060h [parse into ax,bx,cx,dx, SI=what to parse]
 disk_buff	equ	24576
 cqx:

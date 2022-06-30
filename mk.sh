@@ -4,6 +4,7 @@ login_system="y"
 ignore_panics="n"
 load_screen="n"
 md5_hash="y"
+multi_device="y"
 
 
 
@@ -24,6 +25,9 @@ if [ "$load_screen" == "y" ]; then
 fi
 if [ "$md5_hash" == "y" ]; then
    config="$config -dMD5_HASH=1"
+fi
+if [ "$multi_device" == "y" ]; then
+   config="$config -dMULTI_DEVICE=1"
 fi
 echo "Assembling..."
 nasm -O0 -f bin -o boot.bin main.asm
