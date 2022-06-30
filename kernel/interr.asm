@@ -28,23 +28,23 @@ kernel_new_interrupt:
 	popa
 	ret
 
-printstring_i:			; INT 96H, AH = 0
+printstring_i:			; INT 96H, AH = 3
 	 call printstring
 	 iret
-commandline_i:			; INT 96H, AH = 1
+commandline_i:			; INT 96H, AH = 0
 	 call commandline
 	 iret
-newline_i:			; INT 96H, AH = 2
-	 call newline
+getinput_i:			; INT 96H, AH = 2
+	 call getinput
 	 iret
 
 int96h:
 	cmp ah, 00h
-	je printstring_i
-	cmp ah, 01h
 	je commandline_i
+	cmp ah, 01h
+	je not_implemented
 	cmp ah, 02h
-	je newline_i
+	je getinput_i
 	iret
 
 divzero db "Divide by zero detected",0
