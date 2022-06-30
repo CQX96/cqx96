@@ -4,7 +4,7 @@
 
 
 
-
+; Calculate length of string
 os_string_length:
 	pusha
 
@@ -27,7 +27,7 @@ os_string_length:
 	ret
 	.tmp_counter	dw 0
 	
-ucase:
+ucase:				; CONVERT STRING TO UPPERCASE
 	pusha
 	mov si, ax
 
