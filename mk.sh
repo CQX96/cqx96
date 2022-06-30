@@ -46,13 +46,8 @@ cd build
 rm CQX96.img
 mkdosfs -C CQX96.img 1440
 dd status=noxfer conv=notrunc if=../boot.bin of=CQX96.img
-echo "Mounting disk image..."
-rm -rf tmp-loop
-mkdir tmp-loop && mount -o loop -t vfat ./CQX96.img tmp-loop && mcopy ../kernel/cqx96.sys tmp-loop/
-mcopy ../programs/*.prg tmp-loop
-sleep 0.2
-echo "Unmounting disk image..."
-umount tmp-loop || exit
-rm -rf tmp-loop
+echo "Copying files to disk image..."
+mcopy -i CQX96.img ../kernel/cqx96.sys ::/
+mcopy -i CQX96.img ../programs/*.prg ::/
 cd ..
 echo Done!
