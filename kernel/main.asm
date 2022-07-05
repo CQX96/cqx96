@@ -563,9 +563,6 @@ shellname     db "SH.PRG", 0
 input 		  times 64 db 0
 usrfile 	  times 13 db 0
 usrext		  db ".USR", 0
-%include "../fs/handler/urand.asm"
-%include "../fs/handler/null.asm"
-%include "../fs/handler/sbeep.asm"
 %include "../kernel/panic.asm"
 %ifdef GRAPHICS_SUPPORT
 %include "../kernel/includes/graphics/enabler.asm"
