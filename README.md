@@ -3,6 +3,8 @@ CQX96
 
 The CQX96 kernel is a free DOS/UNIX like kernel for the intel (x86).
 
+I am going to try to work on CQX96 again...
+
 
 CQX96 is written in assembly.
 
