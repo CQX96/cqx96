@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # GOOMBADocgen for CQX96
-# Copyright (c) 2022 GoombaProgrammer
+# Copyright (c) 2023 GoombaProgrammer
 
 
 DOCOUT=docs.html
