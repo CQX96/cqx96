@@ -15,7 +15,7 @@ All contributions are welcome.
 
 Currently, CQX96 supports the FAT file system.
 
-This operating system has been tested and worked on these computers:
+This kernel has been tested and worked on these computers (using the [example shell](https://github.com/CQX96/cqx96-apps/blob/main/shelltemplate.asm)):
   1. Acer Aspire 3690
   2. Some HP computer I don't know the model
 
