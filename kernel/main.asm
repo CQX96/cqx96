@@ -98,7 +98,8 @@ cqx:
 	mov [Sides], dx
 
 no_change:
-%ifdef LOAD_SCREEN
+%ifdef LOAD_SCREEN	; This is the loading screen, it is fake loading, but it looks cool and more professional (:
+					; If you really want to use CQX96, you probably want to disable this.
 	mov ax, sysload_dmn
 	call load_daemon
 	mov ax, filesys_dmn
@@ -216,7 +217,9 @@ slashuser:
 ;
 ; COMMANDLINE loads the shell.
 ;
-commandline:	
+commandline:
+	mov byte [logged], 1
+
 	mov ax, shellname
 	mov bx, 0
 	mov cx, 32768
@@ -539,12 +542,13 @@ loggedinuser  times 10 db 0
 %include "../kernel/interr.asm"
 %include "../include/mike/string.asm"
 isslash       db 0
+logged 	      db 0			; 0 = not logged in, 1 = logged in
 welcome       db 'Welcome!', 0
 badcmd        db 'Unknown command or filename.', 0
 delim         db ':', 0
 prg_extension db '.PRG', 0
-incorrectpass db 'Incorrect password,',0
-noshellfound  db 'No shell found!',0
+incorrectpass db 'Incorrect password!',0
+noshellfound  db 'No shell found!',0	; No shell found, you need a shell else you can't do anything. Read the README for more info.
 nosuchuser    db 'That is not a user on this system!',0
 space         db ' ', 0
 loginprompt   db 'CQX96 username (Log in to / if you are a new user): ',13,10,0
@@ -571,5 +575,6 @@ usrext		  db ".USR", 0
 %ifdef MD5_HASH
 md5buffer     times 17 db 0
 %endif
+%include "../kernel/multi.asm" ; Multi-tasking
 %include "../kernel/includes/ini.asm"
 db "github.com/CQX96/cqx96"

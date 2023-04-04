@@ -6,15 +6,14 @@
 
 
 waitkey:
-	mov ah, 0x11
-	int 0x16
-	jnz .key_pressed
-	hlt
-	jmp waitkey
-	
-.key_pressed:
-	mov ah, 0x10
-	int 0x16
+	mov eax, 0
+	mov ah, 10h                           ; BIOS call to wait for key
+	int 16h
+	cmp byte [logged], 0			; Check if we are logged in before switching screens
+	je .end
+	cmp ah, 105
+	je multi_switch
+.end:
 	ret
 
 getinput:
