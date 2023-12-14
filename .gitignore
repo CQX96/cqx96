@@ -3,3 +3,4 @@ sh.asm
 *.sys
 *.prg
 *.img
+config.txt

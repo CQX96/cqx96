@@ -357,6 +357,7 @@ not_implemented:
 	call printstring
 	ret
 %ifdef LOAD_SCREEN
+old_time:	equ 0x00	; Old ticks
 load_daemon:     ; in=ax=daemon name, out=ax=success(0)||fail(1)
 	push ax
 	call newline
@@ -378,6 +379,29 @@ load_daemon:     ; in=ax=daemon name, out=ax=success(0)||fail(1)
 	mov ax, 0
 	
 	ret
+
+wait_tick:
+	mov cl,1
+
+	;
+	; Wait for several ticks
+	;
+	; Input:
+	; CL = Number of ticks
+	;
+wait_ticks_again:
+	mov ch,0
+.0:
+	push cx		; Save counter
+.1:
+	mov ah,0x00	; Read ticks
+	int 0x1a	; Call BIOS
+	cmp dx,[bp+old_time]	; Wait for tick change
+	je .1
+	mov [bp+old_time],dx	; Save new tick
+	pop cx		; Restore counter
+	loop .0		; Loop until complete
+	ret		; Return
 %endif
 ; No shell found, you need a shell else you can't do anything.
 shellfail:

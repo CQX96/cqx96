@@ -6,7 +6,10 @@
 
 divide_by_zero:
 	mov si, divzero
+%ifndef IGNORE_PANICS
 	jmp panic
+%endif
+	jmp $
 
 
 kernel_new_interrupt:

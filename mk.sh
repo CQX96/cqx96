@@ -10,6 +10,52 @@ multi_device="y"
 
 echo "MAKE for CQX96"
 echo "Preprocessing configuration..."
+# Check if config.txt exists
+if [ ! -f config.txt ]; then
+   echo "config.txt not found!"
+   echo "Please run ./config.sh first!"
+   exit
+fi
+# Read config.txt
+while read line
+do
+   if [ "$line" == "graphics_support=y" ]; then
+      graphics_support="y"
+   fi
+   if [ "$line" == "graphics_support=n" ]; then
+      graphics_support="n"
+   fi
+   if [ "$line" == "login_system=y" ]; then
+      login_system="y"
+   fi
+   if [ "$line" == "login_system=n" ]; then
+      login_system="n"
+   fi
+   if [ "$line" == "ignore_panics=y" ]; then
+      ignore_panics="y"
+   fi
+   if [ "$line" == "ignore_panics=n" ]; then
+      ignore_panics="n"
+   fi
+   if [ "$line" == "load_screen=y" ]; then
+      load_screen="y"
+   fi
+   if [ "$line" == "load_screen=n" ]; then
+      load_screen="n"
+   fi
+   if [ "$line" == "md5_hash=y" ]; then
+      md5_hash="y"
+   fi
+   if [ "$line" == "md5_hash=n" ]; then
+      md5_hash="n"
+   fi
+   if [ "$line" == "multi_device=y" ]; then
+      multi_device="y"
+   fi
+   if [ "$line" == "multi_device=n" ]; then
+      multi_device="n"
+   fi
+done < config.txt
 config=""
 if [ "$graphics_support" == "y" ]; then
    config="$config -dGRAPHICS_SUPPORT=1"

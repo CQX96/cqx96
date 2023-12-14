@@ -162,7 +162,9 @@ os_load_file:
 	jnc .floppy_ok			
 
 	mov si, .err_msg_floppy_reset	
+%ifndef IGNORE_PANICS
 	jmp panic
+%endif
 	ret
 
 
@@ -298,7 +300,9 @@ os_load_file:
 	jnc .load_file_sector
 
 	mov si, .err_msg_floppy_reset	
+%ifndef IGNORE_PANICS
 	jmp panic
+%endif
 	ret
 
 
