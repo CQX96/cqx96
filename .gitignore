@@ -1,1 +1,5 @@
 sh.asm
+*.bin
+*.sys
+*.prg
+*.img
