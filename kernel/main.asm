@@ -98,21 +98,6 @@ cqx:
 	mov [Sides], dx
 
 no_change:
-%ifdef LOAD_SCREEN	; This is the loading screen, it is fake loading, but it looks cool and more professional (:
-					; If you really want to use CQX96, you probably want to disable this.
-	mov ax, sysload_dmn
-	call load_daemon
-	mov ax, filesys_dmn
-	call load_daemon
-	mov ax, login_dmn
-	call load_daemon
-	call newline
-	mov si, reachedlogin
-	call printstring
-	call newline
-	mov cl, 9
-	call wait_ticks_again
-%endif	
 	mov cx, 96h			; Create new interrupt int 96h
 	mov si, int96h		; Interrupt label (see interr.asm)
 	call kernel_new_interrupt
@@ -358,27 +343,6 @@ not_implemented:
 	ret
 %ifdef LOAD_SCREEN
 old_time:	equ 0x00	; Old ticks
-load_daemon:     ; in=ax=daemon name, out=ax=success(0)||fail(1)
-	push ax
-	call newline
-    mov si, successms
-	call printstring
-	pop ax
-    mov si, ax
-	call printstring
-	
-	call os_seed_random             ; "Fake" loading. Why? so that the user can actually
-	                                ; read the text.
-	mov ax, 3
-	mov bx, 12
-	call os_get_random
-	mov [rngo], cx
-	mov cl, [rngo]
-	call wait_ticks_again
-	
-	mov ax, 0
-	
-	ret
 
 wait_tick:
 	mov cl,1
@@ -548,11 +512,7 @@ os_print_digit:
 	popa
 	ret
 ; ================================
-
-reachedlogin  db "[SUCCESS!] Reached target: Login", 0
-sysload_dmn   db "Starting system daemon",0
-filesys_dmn   db "Starting filesystem daemon",0
-login_dmn     db "Starting login-data daemon",0
+; Data Section
 %include "../include/tools/input.asm"
 fn            db '            ',0
 %include "../include/tools/string.asm"
@@ -578,8 +538,6 @@ space         db ' ', 0
 loginprompt   db 'CQX96 username (Log in to / if you are a new user): ',13,10,0
 slasherror    db 'The SLASH user may only create another user (adduser command).',0
 passprompt    db 'Password: ',0
-successms     db '[SUCCESS!] ',0
-failms        db '[FAIL!] ',0
 openbracket   db "[",0
 closebracket  db "]",0
 rngo          db 0

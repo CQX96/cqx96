@@ -9,6 +9,17 @@
 ; SI = Panic reason message
 panic:
     push si             ; Push the message to the stack
+
+	mov ah,06h	; Clear screen to red
+	mov al,00h
+	mov bh,04fh
+	mov ch,00d
+	mov cl,00d
+	mov dh,24d
+	mov dl,79d
+	int 10h
+	
+    ; Print panic message
     mov si, panicstr1
     call printstring
     pop si              ; Pop the message so we can use it

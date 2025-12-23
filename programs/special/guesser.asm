@@ -1,3 +1,9 @@
+;@DESC A simple number guessing game
+;@NAME Guesser
+
+; GUESSER.ASM
+; For the CQX96 Kernel
+
 	BITS 16
 	%INCLUDE "cqx.inc"
 	ORG 40960

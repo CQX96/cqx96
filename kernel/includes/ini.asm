@@ -2,4 +2,4 @@
 ; For the CQX96 Kernel
 
 
-; Soon
+; Soon we will add init file parsing (like AUTOEXEC.BAT)
